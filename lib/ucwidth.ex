@@ -189,7 +189,8 @@ defmodule Ucwidth do
   @doc """
   Get width of the code point.
   """
-  @spec width(non_neg_integer) :: 0 | 1 | 2 | {:error, :bad_arg}
+  @spec width(non_neg_integer | String.t()) :: 0 | 1 | 2 | {:error, :bad_arg}
+  def width(<<code::utf8>>), do: width(code)
   def width(0), do: 0
   def width(code) when is_integer(code) and code < 0, do: {:error, :bad_arg}
 
