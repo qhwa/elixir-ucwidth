@@ -21,7 +21,8 @@ defmodule Ucwidth.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:quixir, "~> 0.9", only: :test}
+      {:quixir, "~> 0.9", only: :test},
+      {:benchee, "~> 1.0", only: :dev, runtime: false}
     ]
   end
 end
