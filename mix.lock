@@ -1,0 +1,4 @@
+%{
+  "pollution": {:hex, :pollution, "0.9.2", "3f67542631071c99f807d2a8f9da799c07cd983c902f5357b9e1569c20a26e76", [:mix], [], "hexpm", "6399fd8ffd97dcc3d9d277f60542a234d644d7bcc0d48c8fda93d6be4801bac2"},
+  "quixir": {:hex, :quixir, "0.9.3", "f01c37386b9e1d0526f01a8734a6d7884af294a0ec360f05c24c7171d74632bd", [:mix], [{:pollution, "~> 0.9.2", [hex: :pollution, repo: "hexpm", optional: false]}], "hexpm", "4f3a1fe7c82b767d935b3f7b94cf34b91ef78bb487ef256b303d77417fc7d589"},
+}
