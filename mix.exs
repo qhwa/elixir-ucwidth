@@ -7,7 +7,7 @@ defmodule Ucwidth.MixProject do
       description:
         "A port of ucwidth from C to Elixir, for determining the width (full-width or half-width) of an Unicode character.",
       version: "0.1.0",
-      elixir: "~> 1.10",
+      elixir: ">= 1.9.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
