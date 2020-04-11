@@ -4,6 +4,8 @@ defmodule Ucwidth.MixProject do
   def project do
     [
       app: :ucwidth,
+      description:
+        "A port of ucwidth from C to Elixir, for determining the width (full-width or half-width) of an Unicode character.",
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
@@ -15,7 +17,9 @@ defmodule Ucwidth.MixProject do
         "coveralls.post": :test,
         "coveralls.html": :test
       ],
-      docs: docs()
+      docs: docs(),
+      package: package(),
+      source_url: "https://github.com/qhwa/elixir-ucwidth"
     ]
   end
 
@@ -42,6 +46,17 @@ defmodule Ucwidth.MixProject do
     [
       main: "Ucwidth",
       extras: ~w[README.md]
+    ]
+  end
+
+  defp package do
+    [
+      name: "ucwidth",
+      files: ~w[lib mix.exs],
+      licenses: ["MIT"],
+      links: %{
+        "github" => "https://github.com/qhwa/elixir-ucwidth"
+      }
     ]
   end
 end
