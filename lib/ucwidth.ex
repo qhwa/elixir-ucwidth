@@ -1,15 +1,9 @@
 defmodule Ucwidth do
   @moduledoc """
-  A module for determining whether a Unicode charactor/codepoint has fullwidth or not.
-
-  ## Example
-
-      iex> Ucwidth.full_width?("e")
-      false
-
-      iex> Ucwidth.full_width?("全")
-      true
+  A module for determining whether a Unicode charactor/codepoint has full width or not.
   """
+
+  @max_codepoint 0x10FFFF
 
   @combining {
     {0x0300, 0x036F},
@@ -156,56 +150,30 @@ defmodule Ucwidth do
     {0xE0100, 0xE01EF}
   }
 
-  defguard is_fullwidth(code)
-           when code >= 0x1100 and
-                  (code <= 0x115F or
-                     (code == 0x2329 or code == 0x232A) or
-                     (code >= 0x2E80 and code <= 0xA4CF and code != 0x303F) or
-                     (code >= 0xAC00 and code <= 0xD7A3) or
-                     (code >= 0xF900 and code <= 0xFAFF) or
-                     (code >= 0xFE10 and code <= 0xFE19) or
-                     (code >= 0xFE30 and code <= 0xFE6F) or
-                     (code >= 0xFF00 and code <= 0xFF60) or
-                     (code >= 0xFFE0 and code <= 0xFFE6) or
-                     (code >= 0x20000 and code <= 0x2FFFD) or
-                     (code >= 0x30000 and code <= 0x3FFFD))
-
-  @doc """
-  Check if a codepoint has fullwidth.
-
-  ## Examples
-
-      iex> full_width?("温")
-      true
-
-      iex> full_width?("C")
-      false
-  """
-  @spec full_width?(String.t()) :: boolean | {:error, :bad_arg}
-  def full_width?(<<code::utf8>>), do: full_width?(code)
-  def full_width?(<<_::utf8, _::binary>>), do: {:error, :bad_arg}
-  def full_width?(code) when is_integer(code), do: width(code) == 2
+  @compile {:inline, full_width?: 1}
 
   @doc """
   Get width of the code point.
   """
   @spec width(non_neg_integer | String.t()) :: 0 | 1 | 2 | {:error, :bad_arg}
+
   def width(<<code::utf8>>), do: width(code)
   def width(0), do: 0
-  def width(code) when is_integer(code) and code < 0, do: {:error, :bad_arg}
 
-  def width(code) when is_integer(code) do
+  def width(code) when is_integer(code) and code in 0..@max_codepoint do
     cond do
       combining_char?(code) ->
         0
 
-      is_fullwidth(code) ->
+      full_width?(code) ->
         2
 
       :otherwise ->
         1
     end
   end
+
+  def width(_), do: {:error, :bad_arg}
 
   @doc false
   def combining_char?(code) do
@@ -228,4 +196,19 @@ defmodule Ucwidth do
         bin_search(ranges, target, half + 1, max)
     end
   end
+
+  defp full_width?(0x2329), do: true
+  defp full_width?(0x232A), do: true
+  defp full_width?(0x303F), do: false
+  defp full_width?(code) when code in 0x1100..0x115F, do: true
+  defp full_width?(code) when code in 0x2E80..0xA4CF, do: true
+  defp full_width?(code) when code in 0xAC00..0xD7A3, do: true
+  defp full_width?(code) when code in 0xF900..0xFAFF, do: true
+  defp full_width?(code) when code in 0xFE10..0xFE19, do: true
+  defp full_width?(code) when code in 0xFE30..0xFE6F, do: true
+  defp full_width?(code) when code in 0xFF00..0xFF60, do: true
+  defp full_width?(code) when code in 0xFFE0..0xFFE6, do: true
+  defp full_width?(code) when code in 0x20000..0x2FFFD, do: true
+  defp full_width?(code) when code in 0x30000..0x3FFFD, do: true
+  defp full_width?(_otherwise), do: false
 end
