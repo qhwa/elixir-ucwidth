@@ -14,7 +14,8 @@ defmodule Ucwidth.MixProject do
         "coveralls.detail": :test,
         "coveralls.post": :test,
         "coveralls.html": :test
-      ]
+      ],
+      docs: docs()
     ]
   end
 
@@ -34,6 +35,13 @@ defmodule Ucwidth.MixProject do
       {:ex_doc, "~> 0.21", only: [:dev, :doc], runtime: false},
       {:credo, "~> 1.3", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: :dev, runtime: false}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "Ucwidth",
+      extras: ~w[README.md]
     ]
   end
 end
