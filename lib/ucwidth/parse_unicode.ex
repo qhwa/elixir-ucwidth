@@ -1,7 +1,9 @@
 defmodule Ucwidth.ParseUnicode do
+  @moduledoc false
+
   defmacro __using__(_) do
     quote do
-      import unquote(__MODULE__), only: [def_ucwidth: 3]
+      import unquote(__MODULE__), only: [def_ucwidth: 3, parse_emoji_zwj_seqs: 1]
       import Ucwidth.Util.BinSearch
 
       Module.register_attribute(__MODULE__, :unicode_maps, accumulate: true)
@@ -67,4 +69,24 @@ defmodule Ucwidth.ParseUnicode do
   end
 
   defp hex(t), do: String.to_integer(t, 16)
+
+  def parse_emoji_zwj_seqs(data_path) do
+    data_path
+    |> File.read!()
+    |> String.split("\n", trim: true)
+    |> Stream.reject(&(&1 =~ ~r/^#/))
+    |> Stream.reject(&(&1 =~ ~r/^\s+$/))
+    |> Stream.map(fn line ->
+      parse_emoji_seq(line)
+    end)
+    |> Enum.to_list()
+  end
+
+  defp parse_emoji_seq(line) do
+    [codepoints, _] = String.split(line, ";", trim: true, parts: 2)
+
+    codepoints
+    |> String.split(" ", trim: true)
+    |> Enum.map(&String.to_integer(&1, 16))
+  end
 end

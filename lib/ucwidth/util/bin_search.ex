@@ -1,4 +1,6 @@
 defmodule Ucwidth.Util.BinSearch do
+  @moduledoc false
+
   def bin_search(ranges, target) when is_tuple(ranges) do
     do_bin_search(ranges, target, 0, tuple_size(ranges) - 1)
   end
