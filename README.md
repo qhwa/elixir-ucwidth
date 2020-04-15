@@ -25,6 +25,17 @@ iex> Ucwidth.width("h")
 
 iex> Ucwidth.width("\x0C")
 0
+
+iex> Ucwidth.width("Hello, <<👪>>, family lovers!")
+29
+```
+
+Note: according to Unicode standard, not every character has fixed width. There are some characters with variable width, which is called `ambiguous width characters`. Their width vary depends on the context. This library by default treats ambiguous charaters as narrow ones, and also provides a way to pass be context, e.g:
+
+```elixir
+iex> treat_ambiguous_as = :wide
+...> Ucwidth.width("\u00a1", :wide)
+2
 ```
 
 ## Installation
