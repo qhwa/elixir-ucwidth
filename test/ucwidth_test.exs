@@ -68,6 +68,7 @@ defmodule UcwidthTest do
 
   test "it works with emoji" do
     assert Ucwidth.width("\u{1f468}") == 2
+    assert Ucwidth.width("\u{1F469}\u{200D}\u{1F52C}") == 2
   end
 
   test "it works with multiple codepoint graphemes" do

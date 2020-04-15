@@ -34,10 +34,27 @@ defmodule Ucwidth do
 
   This module provides an option to specify how ambiguous characters are treated.
   see `width/2` for more information.
+
+  ## Combined Emoji characters
+
+  Sticking to latest Unicode specifications, a combined Emoji grapheme's width is counted as if they are a single emoji, which is **2** cells. Please note not all terminals support latest version of Unicode specification, so there might be conflicts displaying these combined Emoji characters.
+
+  For example, the "woman scientist" emoji's width is 2:
+
+  ```elixir
+  iex> Ucwidth.width("👩‍🔬")
+  2
+  ```
+
+  But in some terminals it may be displayed as `👩🔬`
+
+  This problem is implementation related and this library sticks to canonical Unicode specifications.
   """
 
   @max_codepoint 0x10FFFF
   defguardp is_valid_code(code) when is_integer(code) and code in 0..@max_codepoint
+
+  @emoji_width 2
 
   @external_resource comb_data = Path.join(__DIR__, "data/combining.txt")
   @external_resource wide_data = Path.join(__DIR__, "data/wide.txt")
@@ -207,7 +224,13 @@ defmodule Ucwidth do
   end
 
   defp next_grapheme_width(str, ambt) do
-    {<<code::utf8>>, rest} = String.next_codepoint(str)
-    {width(code, ambt), rest}
+    case Ucwidth.CombinedEmoji.next_combined_emoji(str) do
+      :none ->
+        {<<code::utf8>>, rest} = String.next_codepoint(str)
+        {width(code, ambt), rest}
+
+      {_, rest} ->
+        {@emoji_width, rest}
+    end
   end
 end
