@@ -57,8 +57,9 @@ defmodule UcwidthTest do
     assert Ucwidth.width(0x110000) == {:error, :bad_arg}
   end
 
-  test "it does not work with long string" do
-    assert Ucwidth.width("ab") == {:error, :bad_arg}
+  test "it works with long string" do
+    assert Ucwidth.width("ab") == 2
+    assert Ucwidth.width("ab公") == 4
   end
 
   test "it works with conjoined graphemes" do
@@ -67,6 +68,11 @@ defmodule UcwidthTest do
 
   test "it works with emoji" do
     assert Ucwidth.width("\u{1f468}") == 2
+  end
+
+  test "it works with multiple codepoint graphemes" do
+    assert Ucwidth.width("நி") == 2
+    assert Ucwidth.width("ą́") == 1
   end
 
   defp assert_width(codepoint, width) do

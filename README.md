@@ -1,6 +1,6 @@
 # Ucwidth
 
-A port of [ucwidth C library](https://www.cl.cam.ac.uk/~mgk25/) to Elixir.
+A port of [ucwidth C library](https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c) to Elixir.
 
 ## Installation
 

@@ -102,10 +102,10 @@ defmodule Ucwidth do
 
   ## Parameters
 
-  * `codepoint_or_grapheme` - one Unicode grapheme or a unicode codepoint
+  * `codepoint_or_graphemes` - a string or unicode codepoint
 
       - an integer within valid unicode code range (`0..0x11ffff`)
-      - a single grapheme, e.g `"c"`, `"\\u{3f0a1}"`
+      - a string, e.g `"c"`, `"\\u{3f0a1}"`, `"hey"`
 
   * `ambiguous_as` - the treament of [ambiguous characters](https://www.unicode.org/reports/tr11/#ED6), by default `:narrow`
 
@@ -151,18 +151,24 @@ defmodule Ucwidth do
       iex> Ucwidth.width(255)
       1
 
-  If string length is greater than 1, `{:error, :bad_arg}` will be returned:
+  If string length is greater than 1, the sum of its graphemes' width is returned.
 
       iex> Ucwidth.width("abc")
-      {:error, :bad_arg}
+      3
+
+      iex> Ucwidth.width("仓仓")
+      4
 
 
   """
   @spec width(non_neg_integer | String.t(), :wide | :narrow) :: 0 | 1 | 2 | {:error, :bad_arg}
 
-  def width(codepoint_or_grapheme, ambiguous_as \\ :narrow)
+  def width(codepoint_or_graphemes, ambiguous_as \\ :narrow)
 
-  def width(<<code::utf8>>, ambiguous_as), do: width(code, ambiguous_as)
+  def width(text, ambiguous_as) when is_binary(text) do
+    rec_width(text, ambiguous_as, 0)
+  end
+
   def width(0, _), do: 0
 
   def width(code, :wide) when is_valid_code(code) do
@@ -192,4 +198,16 @@ defmodule Ucwidth do
   end
 
   def width(_, _), do: {:error, :bad_arg}
+
+  defp rec_width("", _, w), do: w
+
+  defp rec_width(str, ambt, w) do
+    {x, rest} = next_grapheme_width(str, ambt)
+    rec_width(rest, ambt, w + x)
+  end
+
+  defp next_grapheme_width(str, ambt) do
+    {<<code::utf8>>, rest} = String.next_codepoint(str)
+    {width(code, ambt), rest}
+  end
 end
