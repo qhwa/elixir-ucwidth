@@ -27,8 +27,16 @@ iex> Ucwidth.width("行")
 iex> Ucwidth.width("h")
 1
 
-iex> Ucwidth.width("\x00")
+iex> Ucwidth.width("\x0C")
 0
+```
+
+## Performance
+
+Attention to performance was paid during development. You can check the performance by running:
+
+```sh
+mix run bench/benchmark.exs
 ```
 
 ## License
