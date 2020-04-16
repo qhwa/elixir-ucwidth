@@ -1,6 +1,6 @@
 # Ucwidth
 
-A port of [ucwidth C library](https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c) to Elixir, with Emoji supported.
+A port of [ucwidth C library](https://www.cl.cam.ac.uk/~mgk25/ucs/wcwidth.c) to Elixir, with Emoji (basis, variations and zwj-combined-sequences) supported.
 
 [Online documentation](https://hexdocs.pm/ucwidth/Ucwidth.html)
 
@@ -33,8 +33,10 @@ iex> Ucwidth.width("Hello, <<👪>>, family lovers!")
 Note: according to Unicode standard, not every character has fixed width. There are some characters with variable width, which is called `ambiguous width characters`. Their width vary depends on the context. This library by default treats ambiguous charaters as narrow ones, and also provides a way to pass be context, e.g:
 
 ```elixir
-iex> treat_ambiguous_as = :wide
-...> Ucwidth.width("\u00a1", :wide)
+iex> Ucwidth.width("\u00a1")
+1
+
+iex> Ucwidth.width("\u00a1", :wide)
 2
 ```
 

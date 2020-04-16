@@ -3,7 +3,8 @@ cases = [
   {2, "\u{ff50}", "full_width/full_width_forms"},
   {0, "\x00", "combining/0"},
   {0, "\u{e0100}", "combining/e0100"},
-  {1, "Z", "half_width/ascii"}
+  {1, "Z", "half_width/ascii"},
+  {29, "Hello, <<👪>>, family lovers!", "long_text"}
 ]
 
 for {expect, char, title} <- cases, into: %{} do

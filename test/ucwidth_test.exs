@@ -76,6 +76,18 @@ defmodule UcwidthTest do
     assert Ucwidth.width("ą́") == 1
   end
 
+  test "it accpets `:ambi_as` argument with :narrow" do
+    assert Ucwidth.width("\u00e8", :narrow) == 1
+  end
+
+  test "it accpets `:ambi_as` argument with :wide" do
+    assert Ucwidth.width("\u00ea", :wide) == 2
+  end
+
+  test "it reject `:ambi_as` argument with other values" do
+    assert Ucwidth.width("\u00ea", :any) == {:error, :bad_arg}
+  end
+
   defp assert_width(codepoint, width) do
     assert Ucwidth.width(codepoint) == width
     assert Ucwidth.width(<<codepoint::utf8>>) == width
