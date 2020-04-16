@@ -124,9 +124,9 @@ defmodule Ucwidth do
       - an integer within valid unicode code range (`0..0x11ffff`)
       - a string, e.g `"c"`, `"\\u{3f0a1}"`, `"hey"`
 
-  * `ambiguous_as` - the treament of [ambiguous characters](https://www.unicode.org/reports/tr11/#ED6), by default `:narrow`
+  * `ambiguous_as` - the treament of [ambiguous characters](https://www.unicode.org/reports/tr11/#ED6)
 
-      - `:narrow` - treated as f they are narrow
+      - `:narrow` (default) - treated as f they are narrow
       - `:wide` - treated as if they are wide
 
       For example:
@@ -219,8 +219,13 @@ defmodule Ucwidth do
   defp rec_width("", _, w), do: w
 
   defp rec_width(str, ambt, w) do
-    {x, rest} = next_grapheme_width(str, ambt)
-    rec_width(rest, ambt, w + x)
+    case next_grapheme_width(str, ambt) do
+      {x, rest} when is_integer(x) ->
+        rec_width(rest, ambt, w + x)
+
+      {err, _} ->
+        err
+    end
   end
 
   defp next_grapheme_width(str, ambt) do
