@@ -82,6 +82,26 @@ defmodule Ucwidth.ParseUnicode do
     |> Enum.to_list()
   end
 
+  @doc """
+  Parse the emoji-variation-sequences.txt data file, returning only the
+  `<base> U+FE0F` sequences flagged `emoji style`.
+
+  The `text style` sequences (`<base> U+FE0E`) are intentionally excluded:
+  they request narrow, text presentation and must stay width 1.
+  """
+  def parse_emoji_variation_seqs(data_path) do
+    data_path
+    |> File.read!()
+    |> String.split("\n", trim: true)
+    |> Stream.reject(&(&1 =~ ~r/^#/))
+    |> Stream.reject(&(&1 =~ ~r/^\s+$/))
+    |> Stream.filter(&(&1 =~ ~r/emoji style/))
+    |> Stream.map(fn line ->
+      parse_emoji_seq(line)
+    end)
+    |> Enum.to_list()
+  end
+
   defp parse_emoji_seq(line) do
     [codepoints, _] = String.split(line, ";", trim: true, parts: 2)
 
