@@ -45,8 +45,7 @@ defmodule Ucwidth.CombinedEmoji do
 
     emoji =
       seq
-      |> Enum.map(&<<&1::utf8>>)
-      |> Enum.join()
+      |> Enum.map_join(&<<&1::utf8>>)
 
     def next_combined_emoji(unquote(emoji_ast) <> rest), do: {unquote(emoji), rest}
   end
