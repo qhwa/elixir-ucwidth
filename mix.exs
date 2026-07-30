@@ -11,12 +11,6 @@ defmodule Ucwidth.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ],
       docs: docs(),
       package: package(),
       source_url: "https://github.com/qhwa/elixir-ucwidth"
@@ -57,6 +51,17 @@ defmodule Ucwidth.MixProject do
       links: %{
         "github" => "https://github.com/qhwa/elixir-ucwidth"
       }
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 end
