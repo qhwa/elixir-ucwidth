@@ -49,6 +49,27 @@ defmodule Ucwidth do
   But in some terminals it may be displayed as `👩🔬`
 
   This problem is implementation related and this library sticks to canonical Unicode specifications.
+
+  ## Emoji presentation sequences
+
+  A base character followed by the variation selector `U+FE0F` ("VS16") requests
+  emoji (color, full-width) presentation, which terminals render as **2** cells.
+  Such sequences are measured as a single emoji grapheme:
+
+  ```elixir
+  iex> Ucwidth.width("\u{2699}\u{FE0F}")
+  2
+  ```
+
+  The text selector `U+FE0E` ("VS15") instead requests narrow text presentation
+  and is left at **1** cell:
+
+  ```elixir
+  iex> Ucwidth.width("\u{2699}\u{FE0E}")
+  1
+  ```
+
+  see `Ucwidth.EmojiPresentation` for more information.
   """
 
   @max_codepoint 0x10FFFF
@@ -230,6 +251,16 @@ defmodule Ucwidth do
 
   defp next_grapheme_width(str, ambt) do
     case Ucwidth.CombinedEmoji.next_combined_emoji(str) do
+      :none ->
+        next_presentation_width(str, ambt)
+
+      {_, rest} ->
+        {@emoji_width, rest}
+    end
+  end
+
+  defp next_presentation_width(str, ambt) do
+    case Ucwidth.EmojiPresentation.next_emoji_presentation(str) do
       :none ->
         {<<code::utf8>>, rest} = String.next_codepoint(str)
         {width(code, ambt), rest}

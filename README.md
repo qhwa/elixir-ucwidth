@@ -40,6 +40,16 @@ iex> Ucwidth.width("\u00a1", :wide)
 2
 ```
 
+Emoji presentation sequences (a base character plus the variation selector `U+FE0F`, "VS16") request the full-width emoji rendering and are measured as 2 cells, while the text selector `U+FE0E` keeps the base narrow:
+
+```elixir
+iex> Ucwidth.width("\u{2699}\u{FE0F}") # ⚙️ gear + VS16
+2
+
+iex> Ucwidth.width("\u{2699}\u{FE0E}") # ⚙︎ gear + VS15 (text)
+1
+```
+
 ## Installation
 
 Add `ucwidth` to your list of dependencies in `mix.exs`:
